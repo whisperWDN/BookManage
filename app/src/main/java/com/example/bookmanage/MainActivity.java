@@ -1,12 +1,11 @@
 package com.example.bookmanage;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,26 +15,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //Add Book Button
         Button addBook = findViewById(R.id.add_book);
-        addBook.setOnClickListener(new AddBookListener());
+        addBook.setOnClickListener(new TheClickListener());
         Button bookList = findViewById(R.id.book_list);
-        addBook.setOnClickListener(new BookListListener());
+        bookList.setOnClickListener(new TheClickListener());
     }
 
-    class AddBookListener implements View.OnClickListener{
+    class TheClickListener implements View.OnClickListener{
         @Override
         public void onClick(View v){
             if(v.getId()==R.id.add_book){
-                Toast.makeText(MainActivity.this,"您点击了控件："+((TextView)v).getText(),Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this,AddBookActivity.class);
+                startActivity(intent);
+            }else if(v.getId()==R.id.book_list){
+                Intent intent = new Intent(MainActivity.this,BookListActivity.class);
+                startActivity(intent);
             }
         }
     }
 
-    class BookListListener implements View.OnClickListener{
-        @Override
-        public void onClick(View v){
-            if(v.getId()==R.id.add_book){
-                Toast.makeText(MainActivity.this,"您点击了控件："+((TextView)v).getText(),Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
 }
