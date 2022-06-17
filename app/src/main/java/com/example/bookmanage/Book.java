@@ -6,36 +6,34 @@ public class Book {
     private String ISBN;
     private String publish_club;
     private String publish_year;
-    String getBook_name(){
+    public String getBook_name(){
         return book_name;
     }
-    void setBook_name(String book_name){
+    public void setBook_name(String book_name){
         this.book_name=book_name;
     }
-    String getAuthor(){
+    public String getAuthor(){
         return author;
     }
-    void setAuthor(String author){
+    public void setAuthor(String author){
         this.author=author;
     }
-    String getPublish_club(){
+    public String getPublish_club(){
         return publish_club;
     }
-    void setPublish_club(String publish_club){
+    public void setPublish_club(String publish_club){
         this.publish_club=publish_club;
     }
-    String getISBN(){
+    public String getISBN(){
         return ISBN;
     }
-    void setISBN(String ISBN){
+    public void setISBN(String ISBN){
         this.ISBN=ISBN;
     }
-    String getPublish_year(){
+    public String getPublish_year(){
         return publish_year;
     }
-    void setPublish_year(String publish_year){
+    public void setPublish_year(String publish_year){
         this.publish_year=publish_year;
     }
-
-
 }
