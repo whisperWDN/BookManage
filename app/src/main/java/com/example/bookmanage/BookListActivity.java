@@ -23,7 +23,7 @@ public class BookListActivity extends AppCompatActivity {
         super.onStart();
         // 获得用户数据库帮助器的一个实例
 //        mHelper = BookDBHelper.getInstance(this, 2);
-        // 恢复页面，则打开数据库连接
+////         恢复页面，则打开数据库连接
 //        mHelper.openReadLink();
     }
 
@@ -62,7 +62,7 @@ public class BookListActivity extends AppCompatActivity {
         initBooks();
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager .setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         BookAdapter adapter = new BookAdapter(bookList);
         recyclerView.setAdapter(adapter);
@@ -71,32 +71,17 @@ public class BookListActivity extends AppCompatActivity {
 
     private void initBooks() {
         mHelper = BookDBHelper.getInstance(this, 2);
-        try{
-            mHelper.onCreate(mHelper.openWriteLink());
-        }catch (Exception e){
-            showToast("出现异常");
-        }
+        mHelper.openReadLink();
 
         if (mHelper == null) {
             showToast("数据库连接为空");
             return;
-        }else{
-            showToast("建表成功");
-//            Book book = new Book();
-//            book.setBook_name("西游记");
-//            book.setAuthor("吴承恩");
-//            book.setISBN("9787020024759");
-//            book.setPublish_club("人教社");
-//            book.setPublish_year("2022");
-//            int result = mHelper.insert(book);
-//            if(result==1){
-//                showToast("已存在该书籍的记录");
-//            }else if(result==0){
-//                showToast("数据已写入SQLite数据库");
-//            }
-
         }
-//        bookList = mHelper.query("1=1");
+        try{
+            bookList = mHelper.query("1=1");
+        }catch (Exception e){
+            showToast("出现异常");
+        }
     }
 
 }

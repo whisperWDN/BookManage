@@ -4,9 +4,14 @@ package com.example.bookmanage;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.bookmanage.http.HttpRequestUtil;
+import com.example.bookmanage.http.tool.HttpReqData;
+import com.example.bookmanage.http.tool.HttpRespData;
 
 import java.util.List;
 
@@ -21,6 +26,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         TextView publish_club;
         TextView publish_year;
         TextView code;
+        ImageView book_image;
 
         public ViewHolder (View view)
         {
@@ -30,6 +36,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             publish_club =  view.findViewById(R.id.publish_club);
             publish_year =  view.findViewById(R.id.publish_year);
             code = view.findViewById(R.id.code);
+            book_image = view.findViewById(R.id.book_image);
         }
 
     }
@@ -49,11 +56,27 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position){
 
         Book book = mBookList.get(position);
+
+
+        new Thread(){
+            public void run() {
+                try{
+                    HttpReqData req_data = new HttpReqData(book.getImage_url());
+                    HttpRespData resp_data;
+                    HttpRequestUtil requestUtil = new HttpRequestUtil();
+                    resp_data = requestUtil.getImage(req_data);
+                    holder.book_image.setImageBitmap(resp_data.bitmap);
+                }catch (Exception e){
+                }
+            };
+        }.start();
+
         holder.bookName.setText(book.getBook_name());
         holder.author.setText(book.getAuthor());
         holder.publish_club.setText(book.getPublish_club());
         holder.publish_year.setText(book.getPublish_year());
         holder.code.setText(book.getISBN());
+
 
     }
     //返回RecyclerView的子项数目

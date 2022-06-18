@@ -67,12 +67,14 @@ public class BookDBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "drop_sql:" + drop_sql);
         db.execSQL(drop_sql);
         String create_sql = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " ("
-                + "book_id INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL,"
+                + "book_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                 + "book_name VARCHAR NOT NULL,"
                 + "author VARCHAR NOT NULL,"
-                + "ISBN VARCHAR PRIMARY KEY  NOT NULL,"
-                + "publish_year VARCHAR NOT NULL"
-                + "publish_club VARCHAR NOT NULL"
+                + "ISBN VARCHAR NOT NULL,"
+                + "publish_year VARCHAR NOT NULL,"
+                + "publish_club VARCHAR NOT NULL,"
+                + "image_url VARCHAR NOT NULL"
+
                 + ");";
         Log.d(TAG, "create_sql:" + create_sql);
         db.execSQL(create_sql);
@@ -107,24 +109,13 @@ public class BookDBHelper extends SQLiteOpenHelper {
     // 往该表添加一条记录
     public int insert(Book book) {
         ArrayList<Book> tempArray;
-        if (book.getBook_name() != null && book.getBook_name().length() > 0) {
-            String condition = String.format("name='%s'", book.getBook_name());
+        if (book.getISBN() != null && book.getISBN().length() > 0) {
+            String condition = String.format("isbn='%s'", book.getISBN());
             tempArray = query(condition);
             if (tempArray.size() > 0) {
                 return 1;
             }
         }
-//            // 如果存在同样的手机号码，则更新记录
-//            if (info.phone != null && info.phone.length() > 0) {
-//                String condition = String.format("phone='%s'", info.phone);
-//                tempArray = query(condition);
-//                if (tempArray.size() > 0) {
-//                    update(info, condition);
-//                    result = tempArray.get(0).rowid;
-//                    continue;
-//                }
-//            }
-
         // 不存在唯一性重复的记录，则插入新记录
         ContentValues cv = new ContentValues();
         cv.put("book_name", book.getBook_name());
@@ -132,18 +123,21 @@ public class BookDBHelper extends SQLiteOpenHelper {
         cv.put("ISBN", book.getISBN());
         cv.put("publish_year", book.getPublish_year());
         cv.put("publish_club", book.getPublish_club());
+        cv.put("image_url", book.getImage_url());
         mDB.insert(TABLE_NAME, "", cv);
         return 0;
     }
 
     // 根据条件更新指定的表记录
-    public int update(Book info, String condition) {
+    public int update(Book book, String condition) {
         ContentValues cv = new ContentValues();
-        cv.put("bookName", info.getBook_name());
-        cv.put("author", info.getAuthor());
-        cv.put("ISBN", info.getISBN());
-        cv.put("publish_year", info.getPublish_year());
-        cv.put("publish_club", info.getPublish_club());
+        cv.put("book_name", book.getBook_name());
+        cv.put("author", book.getAuthor());
+        cv.put("ISBN", book.getISBN());
+        cv.put("publish_year", book.getPublish_year());
+        cv.put("publish_club", book.getPublish_club());
+        cv.put("image_url", book.getImage_url());
+
         // 执行更新记录动作，该语句返回记录更新的数目
         return mDB.update(TABLE_NAME, cv, condition, null);
     }
@@ -155,8 +149,10 @@ public class BookDBHelper extends SQLiteOpenHelper {
 
 
     public ArrayList<Book> query(String condition) {
-        String sql = String.format("select book_name,author,ISBN,publish_year,publish_club" +
-                " from %s where %s;", TABLE_NAME, condition);
+//        String sql = String.format("select book_name,author,ISBN,publish_year,publish_club" +
+//                " from %s where %s;", TABLE_NAME, condition);
+        String sql = String.format("select book_name,author,isbn,publish_year,publish_club,image_url" +
+                " from %s ", TABLE_NAME);
         Log.d(TAG, "query sql: " + sql);
         ArrayList<Book> bookArray = new ArrayList<Book>();
         // 执行记录查询动作，该语句返回结果集的游标
@@ -169,7 +165,7 @@ public class BookDBHelper extends SQLiteOpenHelper {
             book.setISBN(cursor.getString(2));
             book.setPublish_year(cursor.getString(3));
             book.setPublish_club(cursor.getString(4));
-
+            book.setImage_url(cursor.getString(5));
             bookArray.add(book);
         }
         cursor.close();

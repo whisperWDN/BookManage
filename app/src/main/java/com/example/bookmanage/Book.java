@@ -6,6 +6,7 @@ public class Book {
     private String ISBN;
     private String publish_club;
     private String publish_year;
+    private String image_url;
     public String getBook_name(){
         return book_name;
     }
@@ -35,5 +36,11 @@ public class Book {
     }
     public void setPublish_year(String publish_year){
         this.publish_year=publish_year;
+    }
+    public String getImage_url(){
+        return image_url;
+    }
+    public void setImage_url(String image_url){
+        this.image_url=image_url;
     }
 }

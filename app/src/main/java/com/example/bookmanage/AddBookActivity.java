@@ -6,11 +6,11 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmanage.database.BookDBHelper;
 import com.example.bookmanage.http.HttpRequestUtil;
@@ -21,19 +21,14 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @SuppressLint("DefaultLocale")
 public class AddBookActivity extends AppCompatActivity {
     private BookDBHelper mHelper;
     private final String apikey = "12775.2411e68a143df74f82e7654e0c6c5d17.a9c9149f33c5af2f565e092ea7db63ec";
-    private String bookName;
-    private String author;
-    private String publishing;
-    private String published;
-    private String code;
+    private Book book ;
+    private ArrayList<Book> bookList = new ArrayList<>();
+    RecyclerView addBookRecycleView;
 
 
     @Override
@@ -46,6 +41,10 @@ public class AddBookActivity extends AppCompatActivity {
         searchBook.setOnClickListener(new TheClickListener());
         Button addBookToList = findViewById(R.id.add_book_to_list);
         addBookToList.setOnClickListener(new TheClickListener());
+        addBookRecycleView=findViewById(R.id.add_book_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        addBookRecycleView.setLayoutManager(layoutManager);
 
     }
 
@@ -101,12 +100,6 @@ public class AddBookActivity extends AppCompatActivity {
                 String ISBN = EditISBN.getText().toString();
                 SearchBook(ISBN);
             }else if(v.getId()==R.id.add_book_to_list) {
-                Book book = new Book();
-                book.setBook_name(bookName);
-                book.setAuthor(author);
-                book.setISBN(code);
-                book.setPublish_club(published);
-                book.setPublish_year(publishing);
                 int result = mHelper.insert(book);
                 if(result==1){
                     showToast("已存在该书籍的记录");
@@ -134,24 +127,36 @@ public class AddBookActivity extends AppCompatActivity {
                     if(Integer.parseInt(jsonObject.getString("ret"))==0){
                         addBookToList.setTextColor(0xFFFFFFFF);
                         addBookToList.setEnabled(true);
-                        bookName = jsonObject.getJSONObject("data").getString("name");
-                        author = jsonObject.getJSONObject("data").getString("author");
-                        publishing = jsonObject.getJSONObject("data").getString("publishing");
-                        published = jsonObject.getJSONObject("data").getString("published");
-                        code = jsonObject.getJSONObject("data").getString("code");
-                        String[] keys = new String[]{"书名:          ","作者:          ","出版社:      ","出版年份:   "};
-                        String[] values=new String[]{bookName,author,published,publishing};
-                        ListView listView=findViewById(R.id.listview);
-                        List<Map<String,String>> listItems = new ArrayList<>();
-                        for(int i=0;i< keys.length;i++){
-                            Map<String,String> map = new HashMap<>();
-                            map.put("key",keys[i]);
-                            map.put("value",values[i]);
-                            listItems.add(map);
+                        book = new Book();
+                        book.setBook_name(jsonObject.getJSONObject("data").getString("name"));
+                        book.setAuthor(jsonObject.getJSONObject("data").getString("author"));
+                        book.setPublish_year(jsonObject.getJSONObject("data").getString("publishing"));
+                        book.setPublish_club(jsonObject.getJSONObject("data").getString("published"));
+                        book.setISBN(jsonObject.getJSONObject("data").getString("code"));
+                        book.setImage_url(jsonObject.getJSONObject("data").getString("photoUrl"));
+                        if(bookList.isEmpty()){
+                            bookList.add(book);
+                        }else{
+                            bookList.clear();
+                            bookList.add(book);
                         }
-                        SimpleAdapter adapter = new SimpleAdapter(AddBookActivity.this,listItems,R.layout.book_fields,
-                                new String[]{"key","value"},new int[]{R.id.key,R.id.value});
-                        listView.setAdapter(adapter);
+
+//                        String[] keys = new String[]{"书名:          ","作者:          ","出版社:      ","出版年份:   "};
+//                        String[] values=new String[]{bookName,author,published,publishing};
+
+//                        List<Map<String,String>> listItems = new ArrayList<>();
+//                        for(int i=0;i< keys.length;i++){
+//                            Map<String,String> map = new HashMap<>();
+//                            map.put("key",keys[i]);
+//                            map.put("value",values[i]);
+//                            listItems.add(map);
+//                        }
+//                        SimpleAdapter adapter = new SimpleAdapter(AddBookActivity.this,listItems,R.layout.book_fields,
+//                                new String[]{"key","value"},new int[]{R.id.key,R.id.value});
+                        BookAdapter adapter = new BookAdapter(bookList);
+                        addBookRecycleView.setAdapter(adapter);
+//                        Glide.with(AddBookActivity.this)
+//                            .load(book.getImage_url()).into(findViewById(R.id.book_image));
                     }else{
                         addBookToList.setTextColor(0xFFD0EFC6);
                         addBookToList.setEnabled(false);
