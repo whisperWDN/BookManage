@@ -108,14 +108,16 @@ public class BookDBHelper extends SQLiteOpenHelper {
 
     // 往该表添加一条记录
     public int insert(Book book) {
-        ArrayList<Book> tempArray;
-        if (book.getISBN() != null && book.getISBN().length() > 0) {
-            String condition = String.format("isbn='%s'", book.getISBN());
-            tempArray = query(condition);
-            if (tempArray.size() > 0) {
-                return 1;
-            }
+        String sql = String.format("select *" +
+                " from %s where isbn='%s'", TABLE_NAME,book.getISBN());
+        Log.d(TAG, "query sql: " + sql);
+
+        Cursor cursor = mDB.rawQuery(sql, null);
+
+        if(cursor.moveToNext()) {
+            return 1;
         }
+        cursor.close();
         // 不存在唯一性重复的记录，则插入新记录
         ContentValues cv = new ContentValues();
         cv.put("book_name", book.getBook_name());
@@ -148,9 +150,8 @@ public class BookDBHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<Book> query(String condition) {
-//        String sql = String.format("select book_name,author,ISBN,publish_year,publish_club" +
-//                " from %s where %s;", TABLE_NAME, condition);
+    public ArrayList<Book> query() {
+
         String sql = String.format("select book_name,author,isbn,publish_year,publish_club,image_url" +
                 " from %s ", TABLE_NAME);
         Log.d(TAG, "query sql: " + sql);

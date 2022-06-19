@@ -56,20 +56,26 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position){
 
         Book book = mBookList.get(position);
-
-
-        new Thread(){
-            public void run() {
-                try{
-                    HttpReqData req_data = new HttpReqData(book.getImage_url());
-                    HttpRespData resp_data;
-                    HttpRequestUtil requestUtil = new HttpRequestUtil();
-                    resp_data = requestUtil.getImage(req_data);
-                    holder.book_image.setImageBitmap(resp_data.bitmap);
-                }catch (Exception e){
-                }
+        if(book.getImage_url()!="null"){
+            Thread thread = new Thread(){
+                public void run() {
+                    try{
+                        HttpReqData req_data = new HttpReqData(book.getImage_url());
+                        HttpRespData resp_data;
+                        HttpRequestUtil requestUtil = new HttpRequestUtil();
+                        resp_data = requestUtil.getImage(req_data);
+                        holder.book_image.setImageBitmap(resp_data.bitmap);
+                    }catch (Exception e){
+                    }
+                };
             };
-        }.start();
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         holder.bookName.setText(book.getBook_name());
         holder.author.setText(book.getAuthor());

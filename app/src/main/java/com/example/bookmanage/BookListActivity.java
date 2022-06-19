@@ -78,7 +78,7 @@ public class BookListActivity extends AppCompatActivity {
             return;
         }
         try{
-            bookList = mHelper.query("1=1");
+            bookList = mHelper.query();
         }catch (Exception e){
             showToast("出现异常");
         }
