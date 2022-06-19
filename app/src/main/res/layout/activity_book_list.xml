@@ -65,8 +65,9 @@
             android:id="@+id/recycler_view"
             android:layout_width="1000px"
             android:layout_height="wrap_content"
-            />
+            >
 
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
