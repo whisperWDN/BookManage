@@ -141,22 +141,8 @@ public class AddBookActivity extends AppCompatActivity {
                             bookList.add(book);
                         }
 
-//                        String[] keys = new String[]{"书名:          ","作者:          ","出版社:      ","出版年份:   "};
-//                        String[] values=new String[]{bookName,author,published,publishing};
-
-//                        List<Map<String,String>> listItems = new ArrayList<>();
-//                        for(int i=0;i< keys.length;i++){
-//                            Map<String,String> map = new HashMap<>();
-//                            map.put("key",keys[i]);
-//                            map.put("value",values[i]);
-//                            listItems.add(map);
-//                        }
-//                        SimpleAdapter adapter = new SimpleAdapter(AddBookActivity.this,listItems,R.layout.book_fields,
-//                                new String[]{"key","value"},new int[]{R.id.key,R.id.value});
                         BookAdapter adapter = new BookAdapter(bookList);
                         addBookRecycleView.setAdapter(adapter);
-//                        Glide.with(AddBookActivity.this)
-//                            .load(book.getImage_url()).into(findViewById(R.id.book_image));
                     }else{
                         addBookToList.setTextColor(0xFFD0EFC6);
                         addBookToList.setEnabled(false);

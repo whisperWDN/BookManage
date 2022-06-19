@@ -173,14 +173,27 @@ public class BookDBHelper extends SQLiteOpenHelper {
         return bookArray;
     }
 
-//    // 根据手机号码查询指定记录
-//    public Book queryByPhone(String phone) {
-//        Book info = null;
-//        ArrayList<Book> infoArray = query(String.format("phone='%s'", phone));
-//        if (infoArray.size() > 0) {
-//            info = infoArray.get(0);
-//        }
-//        return info;
-//    }
+    // 根据作者查询指定记录
+    public ArrayList<Book> queryByAuthor(String author) {
+        String sql = String.format("select book_name,author,isbn,publish_year,publish_club,image_url" +
+                " from %s where author like '%%%s%%'", TABLE_NAME,author);
+        Log.d(TAG, "query sql: " + sql);
+        ArrayList<Book> bookArray = new ArrayList<Book>();
+        // 执行记录查询动作，该语句返回结果集的游标
+        Cursor cursor = mDB.rawQuery(sql, null);
+        // 循环取出游标指向的每条记录
+        while (cursor.moveToNext()) {
+            Book book = new Book();
+            book.setBook_name(cursor.getString(0));
+            book.setAuthor(cursor.getString(1));
+            book.setISBN(cursor.getString(2));
+            book.setPublish_year(cursor.getString(3));
+            book.setPublish_club(cursor.getString(4));
+            book.setImage_url(cursor.getString(5));
+            bookArray.add(book);
+        }
+        cursor.close();
+        return bookArray;
+    }
 
 }
